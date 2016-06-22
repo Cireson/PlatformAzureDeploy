@@ -126,6 +126,10 @@
       "metadata": {
         "description": "Describes the performance level for Edition"
       }
+    },
+    "platformVersion": {
+      "type": "string",
+      "defaultValue": "1.0.68-rc0008"
     }
   },
 
@@ -390,7 +394,7 @@
                 "http://cireson.blob.core.windows.net/demo/daemonjson.ps1",
                 "http://cireson.blob.core.windows.net/demo/PlatformDownload.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('vmexsqlsvrName'), ' -dbName ', variables('vmexdbName'), ' -sqlUserName ', parameters('vmexsqlsvrAdminLogin'), ' -sqlPassword ', parameters('vmexsqlsvrAdminLoginPassword'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('vmexsqlsvrName'), ' -dbName ', variables('vmexdbName'), ' -sqlUserName ', parameters('vmexsqlsvrAdminLogin'), ' -sqlPassword ', parameters('vmexsqlsvrAdminLoginPassword'), ' -platformVersion ', parameters('platformVersion'))]"
             }
           }
         }
