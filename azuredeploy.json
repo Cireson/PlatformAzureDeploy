@@ -84,6 +84,7 @@
     },
     "vmexsqlsvrAdminLogin": {
       "type": "string",
+      "defaultValue": "sqladmin",
       "minLength": 1
     },
     "vmexsqlsvrAdminLoginPassword": {
