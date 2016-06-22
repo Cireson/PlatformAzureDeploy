@@ -12,7 +12,7 @@ Platform will then be accessible at http://hostname.azureregion.cloudapp.azure.c
 
 Click the "Deploy to Azure" button and edit the parameter values as necessary.
 
-NOTE: There is a network bug in Windows 2016 TP5 that may impact container connectivity. Fix from MS is coming soon. If needed, workaround at https://msdn.microsoft.com/en-us/virtualization/windowscontainers/management/container_networking. 
+NOTE: There is a network bug in Windows 2016 TP5 that may impact container connectivity. Fix from MS is coming soon, but the workaround is incorporated into this deployment. If needed, workaround at https://msdn.microsoft.com/en-us/virtualization/windowscontainers/management/container_networking. 
 
 
 
