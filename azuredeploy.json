@@ -392,6 +392,7 @@
                 "http://cireson.blob.core.windows.net/demo/makecert.exe",
                 "http://cireson.blob.core.windows.net/demo/winrmconf.cmd",
                 "http://cireson.blob.core.windows.net/demo/daemonjson.ps1",
+                "http://cireson.blob.core.windows.net/demo/FixTP5NtwkBug.ps1",
                 "http://cireson.blob.core.windows.net/demo/PlatformDownload.ps1"
               ],
               "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('vmexsqlsvrName'), ' -dbName ', variables('vmexdbName'), ' -sqlUserName ', parameters('vmexsqlsvrAdminLogin'), ' -sqlPassword ', parameters('vmexsqlsvrAdminLoginPassword'), ' -platformVersion ', parameters('platformVersion'))]"
