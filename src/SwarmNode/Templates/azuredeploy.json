@@ -91,9 +91,9 @@
       "type": "securestring",
       "defaultValue": "P@ssw0rd1!"
     },
-    "environmentPrefix": {
+    "dbName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "CiresonPlatform",
       "minLength": 2,
       "maxLength": 6
     },
@@ -152,7 +152,7 @@
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('existingSubnetName'))]",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[concat('sqlsvr', uniqueString(resourceGroup().id))]",
-    "dbName": "[concat(parameters('environmentPrefix'), 'sqlsvr')]"
+    "dbName": "[parameters('dbName')]"
   },
   "resources": [
 
