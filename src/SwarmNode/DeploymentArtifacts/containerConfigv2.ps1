@@ -7,11 +7,11 @@
 param
 (
     [string] $HostName = $(throw "HostName is required."),
-    [string]$sqlServer = "vmexsqlsvri3s3ayqm2nipe",
-    [string]$dbName = "CiresonPlatform",
-    [string]$sqlUserName = "sqladmin",
-    [string]$sqlPassword = "P@ssw0rd1!",
-    [string]$platformVersion = "1.0.68-rc0008"
+    [string]$sqlServer = $(throw "sqlServer is required."),
+    [string]$dbName = $(throw "dbName is required."),
+    [string]$sqlUserName = $(throw "sqlUserName is required."),
+    [string]$sqlPassword = $(throw "sqlPassword is required."),
+    [string]$platformVersion = $(throw "platformVersion is required.")
 )
 
 $Logfile = "C:\containerConfig.log"
@@ -49,7 +49,7 @@ Install-WindowsFeature containers
 #use hacked version of Install-ContainerHost.ps1 until it pull request accepted
 #wget -uri https://aka.ms/tp5/Install-ContainerHost -OutFile c:\Install-ContainerHost.ps1
 #wget https://raw.githubusercontent.com/brogersyh/Virtualization-Documentation/master/windows-server-container-tools/Install-ContainerHost/Install-ContainerHost.ps1 -OutFile c:\Install-ContainerHost.ps1
-wget http://cireson.blob.core.windows.net/demo/Install-ContainerHost.ps1 -OutFile c:\Install-ContainerHost.ps1
+wget https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/Install-ContainerHost.ps1 -OutFile c:\Install-ContainerHost.ps1
 
 #skip running the script here for now, since reboot cycle required from the containers feature added above - needs to be manually invoked via rdp
 #c:\Install-ContainerHost.ps1

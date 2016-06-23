@@ -35,6 +35,7 @@
     <None Include="DeploymentArtifacts\containerConfigv2.ps1" />
     <None Include="DeploymentArtifacts\daemonjson.ps1" />
     <None Include="DeploymentArtifacts\FixTP5NtwkBug.ps1" />
+    <None Include="DeploymentArtifacts\Install-ContainerHost.ps1" />
     <None Include="DeploymentArtifacts\makecert.exe" />
     <None Include="DeploymentArtifacts\PlatformDownload.ps1" />
     <None Include="DeploymentArtifacts\winrmconf.cmd" />
