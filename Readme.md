@@ -8,7 +8,7 @@ This Microsoft Azure template creates
 
 Platform will then be accessible at http://hostname.azureregion.cloudapp.azure.com/api 
 
-<a target="_blank" href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCireson%2FPlatformAzureDeploy%2Fmaster%2Fsrc%2fSwarmNode%2ftemplates%2fazuredeploy.json"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+<a target="_blank" href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCireson%2FPlatformAzureDeploy%2Fmaster%2Fsrc%2fSwarmNode%2fTemplates%2fazuredeploy.json"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
 Click the "Deploy to Azure" button and edit the parameter values as necessary.
 
