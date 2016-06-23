@@ -387,13 +387,13 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "http://cireson.blob.core.windows.net/demo/containerConfigv2.ps1",
-                "http://cireson.blob.core.windows.net/demo/ConfigureWinRM.ps1",
-                "http://cireson.blob.core.windows.net/demo/makecert.exe",
-                "http://cireson.blob.core.windows.net/demo/winrmconf.cmd",
-                "http://cireson.blob.core.windows.net/demo/daemonjson.ps1",
-                "http://cireson.blob.core.windows.net/demo/FixTP5NtwkBug.ps1",
-                "http://cireson.blob.core.windows.net/demo/PlatformDownload.ps1"
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/containerConfigv2.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/ConfigureWinRM.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/makecert.exe",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/winrmconf.cmd",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/daemonjson.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/FixTP5NtwkBug.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/PlatformDownload.ps1"
               ],
               "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('sqlsvrAdminLogin'), ' -sqlPassword ', parameters('sqlsvrAdminLoginPassword'), ' -platformVersion ', parameters('platformVersion'))]"
             }
