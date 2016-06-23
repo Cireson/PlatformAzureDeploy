@@ -82,27 +82,27 @@
         "description": "VM Size"
       }
     },
-    "vmexsqlsvrAdminLogin": {
+    "sqlsvrAdminLogin": {
       "type": "string",
       "defaultValue": "sqladmin",
       "minLength": 1
     },
-    "vmexsqlsvrAdminLoginPassword": {
+    "sqlsvrAdminLoginPassword": {
       "type": "securestring",
       "defaultValue": "P@ssw0rd1!"
     },
     "environmentPrefix": {
       "type": "string",
-      "defaultValue": "vmex",
+      "defaultValue": "",
       "minLength": 2,
       "maxLength": 6
     },
-    "vmexdbCollation": {
+    "dbCollation": {
       "type": "string",
       "minLength": 1,
       "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
     },
-    "vmexdbEdition": {
+    "dbEdition": {
       "type": "string",
       "defaultValue": "Basic",
       "allowedValues": [
@@ -111,7 +111,7 @@
         "Premium"
       ]
     },
-    "vmexdbRequestedServiceObjectiveName": {
+    "dbRequestedServiceObjectiveName": {
       "type": "string",
       "defaultValue": "Basic",
       "allowedValues": [
@@ -151,8 +151,8 @@
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('existingVNetName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('existingSubnetName'))]",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
-    "vmexsqlsvrName": "[concat('vmexsqlsvr', uniqueString(resourceGroup().id))]",
-    "vmexdbName": "[concat(parameters('environmentPrefix'), 'vmexsqlsvr')]"
+    "sqlsvrName": "[concat('sqlsvr', uniqueString(resourceGroup().id))]",
+    "dbName": "[concat(parameters('environmentPrefix'), 'sqlsvr')]"
   },
   "resources": [
 
@@ -375,7 +375,7 @@
           "apiVersion": "2015-06-15",
           "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
-            "[concat('Microsoft.Sql/servers', '/', variables('vmexsqlsvrName'))]"
+            "[concat('Microsoft.Sql/servers', '/', variables('sqlsvrName'))]"
           ],
           "tags": {
             "displayName": "containerConfiguration"
@@ -387,33 +387,33 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "http://cireson.blob.core.windows.net/demo/containerConfigv2.ps1",
-                "http://cireson.blob.core.windows.net/demo/ConfigureWinRM.ps1",
-                "http://cireson.blob.core.windows.net/demo/makecert.exe",
-                "http://cireson.blob.core.windows.net/demo/winrmconf.cmd",
-                "http://cireson.blob.core.windows.net/demo/daemonjson.ps1",
-                "http://cireson.blob.core.windows.net/demo/FixTP5NtwkBug.ps1",
-                "http://cireson.blob.core.windows.net/demo/PlatformDownload.ps1"
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/containerConfigv2.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/ConfigureWinRM.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/makecert.exe",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/winrmconf.cmd",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/daemonjson.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/FixTP5NtwkBug.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/Deployment%20Artifacts/PlatformDownload.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('vmexsqlsvrName'), ' -dbName ', variables('vmexdbName'), ' -sqlUserName ', parameters('vmexsqlsvrAdminLogin'), ' -sqlPassword ', parameters('vmexsqlsvrAdminLoginPassword'), ' -platformVersion ', parameters('platformVersion'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file containerConfigv2.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('sqlsvrAdminLogin'), ' -sqlPassword ', parameters('sqlsvrAdminLoginPassword'), ' -platformVersion ', parameters('platformVersion'))]"
             }
           }
         }
       ]
     },
     {
-      "name": "[variables('vmexsqlsvrName')]",
+      "name": "[variables('sqlsvrName')]",
       "type": "Microsoft.Sql/servers",
       "location": "[resourceGroup().location]",
       "apiVersion": "2014-04-01-preview",
       "dependsOn": [ ],
       "tags": {
-        "displayName": "vmexsqlsvr"
+        "displayName": "sqlsvr"
       },
       "properties": {
         "version": "12.0",
-        "administratorLogin": "[parameters('vmexsqlsvrAdminLogin')]",
-        "administratorLoginPassword": "[parameters('vmexsqlsvrAdminLoginPassword')]"
+        "administratorLogin": "[parameters('sqlsvrAdminLogin')]",
+        "administratorLoginPassword": "[parameters('sqlsvrAdminLoginPassword')]"
       },
       "resources": [
         {
@@ -422,7 +422,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2014-04-01-preview",
           "dependsOn": [
-            "[concat('Microsoft.Sql/servers/', variables('vmexsqlsvrName'))]"
+            "[concat('Microsoft.Sql/servers/', variables('sqlsvrName'))]"
           ],
           "properties": {
             "startIpAddress": "1.0.0.0",
@@ -430,21 +430,21 @@
           }
         },
         {
-          "name": "[variables('vmexdbName')]",
+          "name": "[variables('dbName')]",
           "type": "databases",
           "location": "[resourceGroup().location]",
           "apiVersion": "2014-04-01-preview",
           "dependsOn": [
-            "[concat('Microsoft.Sql/servers', '/', variables('vmexsqlsvrName'))]"
+            "[concat('Microsoft.Sql/servers', '/', variables('sqlsvrName'))]"
           ],
           "tags": {
-            "displayName": "vmexdb"
+            "displayName": "db"
           },
           "properties": {
-            "collation": "[parameters('vmexdbCollation')]",
-            "edition": "[parameters('vmexdbEdition')]",
+            "collation": "[parameters('dbCollation')]",
+            "edition": "[parameters('dbEdition')]",
             "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "[parameters('vmexdbRequestedServiceObjectiveName')]"
+            "requestedServiceObjectiveName": "[parameters('dbRequestedServiceObjectiveName')]"
           }
         }
       ]
@@ -453,7 +453,7 @@
   "outputs": {
     "ConnectionString": {
       "type": "string",
-      "value": "[concat('Server=tcp:',variables('vmexsqlsvrName'),'.database.windows.net,1433;Data Source=',variables('vmexsqlsvrName'),'.database.windows.net;Initial Catalog=',variables('vmexdbName'),';Persist Security Info=False;User ID=',parameters('vmexsqlsvrAdminLogin'),';Password=',parameters('vmexsqlsvrAdminLoginPassword'),';Pooling=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;')]"
+      "value": "[concat('Server=tcp:',variables('sqlsvrName'),'.database.windows.net,1433;Data Source=',variables('sqlsvrName'),'.database.windows.net;Initial Catalog=',variables('dbName'),';Persist Security Info=False;User ID=',parameters('sqlsvrAdminLogin'),';Password=',parameters('sqlsvrAdminLoginPassword'),';Pooling=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;')]"
     }
   }
 }
