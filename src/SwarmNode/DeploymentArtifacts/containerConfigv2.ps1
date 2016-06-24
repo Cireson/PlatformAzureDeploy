@@ -85,13 +85,9 @@ choco install -y docker-compose -version 1.7.0
 
 .\AddAccountToLogonAsService $sqlUserName
 
-#ensure docker service is running under proper admin credentials
-$service = gwmi win32_service -filter "name='docker'"
-$service.change($null,$null,$null,$null,$null,$null,".\$sqlUserName","$sqlPassword")
-
-restart-service "docker"
-
 Start-Sleep 30
+
+#todo: I think we need to actually create the container, create the admin user, install the platform host as a service in the container running under the admin user, and then run the container.
 
 #start the platform
 docker run -d -v c:/Cireson.Platform.Host:c:/Cireson.Platform.Host -p 80:80 windowsservercore:latest c:/Cireson.Platform.Host/Cireson.Platform.Host.exe

@@ -29,11 +29,13 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
+    <Content Include="Templates\azureVmDeploy.json" />
     <Content Include="Templates\azuredeploy.json" />
     <Content Include="Templates\azuredeploy.parameters.json" />
     <None Include="DeploymentArtifacts\AddAccountToLogonAsService.ps1" />
     <None Include="DeploymentArtifacts\ConfigureWinRM.ps1" />
     <None Include="DeploymentArtifacts\containerConfigv2.ps1" />
+    <None Include="DeploymentArtifacts\vmConfig.ps1" />
     <None Include="DeploymentArtifacts\daemonjson.ps1" />
     <None Include="DeploymentArtifacts\FixTP5NtwkBug.ps1" />
     <None Include="DeploymentArtifacts\Install-ContainerHost.ps1" />

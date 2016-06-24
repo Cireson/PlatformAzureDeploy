@@ -5,6 +5,12 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "CiresonPlatform", "SwarmNode\CiresonPlatform.deployproj", "{213D63A3-B9A5-4853-B88B-72DA0A28F86E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Root Files", "GitHub Root Files", "{FD655D42-DF7E-4E88-94D9-1287EDF629A2}"
+	ProjectSection(SolutionItems) = preProject
+		..\contributors.txt = ..\contributors.txt
+		..\Readme.md = ..\Readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
