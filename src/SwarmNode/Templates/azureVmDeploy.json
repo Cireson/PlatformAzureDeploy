@@ -136,7 +136,7 @@
     "platformRole": {
       "type": "string",
       "defaultValue": "Web",
-      "allowedValue": [
+      "allowedValues": [
         "Web",
         "Worker",
         "Both"
