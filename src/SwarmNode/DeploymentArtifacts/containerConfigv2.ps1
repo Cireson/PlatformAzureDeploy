@@ -83,6 +83,14 @@ choco install -y docker-compose -version 1.7.0
 
 .\FixTP5NtwkBug.ps1 
 
+.\AddAccountToLogonAsService $sqlUserName
+
+#ensure docker service is running under proper admin credentials
+$service = gwmi win32_service -filter "name='docker'"
+$service.change($null,$null,$null,$null,$null,$null,".\$sqlUserName","$sqlPassword")
+
+restart-service "docker"
+
 Start-Sleep 30
 
 #start the platform
