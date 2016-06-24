@@ -125,10 +125,24 @@
     },
     "platformVersion": {
       "type": "string",
-      "defaultValue": "1.0.68-rc0008"
+      "defaultValue": "1.0.68-rc0011",
+      "allowedValues": [
+        "1.0.68-rc0011",
+        "1.0.68-rc0010",
+        "1.0.68-rc0009",
+        "1.0.68-rc0008"
+      ]
+    },
+    "platformRole": {
+      "type": "string",
+      "defaultValue": "Web",
+      "allowedValue": [
+        "Web",
+        "Worker",
+        "Both"
+      ]
     }
   },
-
   "variables": {
     "windowsOSVersion": "2016-Technical-Preview-with-Containers",
     "imagePublisher": "MicrosoftWindowsServer",
@@ -326,7 +340,7 @@
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'))]"
             }
           }
         }

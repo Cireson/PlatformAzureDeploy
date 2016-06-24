@@ -9,7 +9,8 @@ param
     [string]$dbName = $(throw "dbName is required."),
     [string]$sqlUserName = $(throw "sqlUserName is required."),
     [string]$sqlPassword = $(throw "sqlPassword is required."),
-    [string]$platformVersion = $(throw "platformVersion is required.")
+    [string]$platformVersion = $(throw "platformVersion is required."),
+	[string]$platformRole = "Web"
 )
 
 .\ConfigureWinRM.ps1 $HostName
@@ -23,6 +24,16 @@ param
 #todo: need a way to specify an ssl cert from storage, install it locally, and set it up with the service.
 $localUserName = '.\' + $sqlUserName
 $args = "-i", "-sn", "CiresonPlatform", "-sdn", "CiresonPlatform", "-usr", $localUserName, "-pwd", $sqlPassword
+
+if($platformRole -eq "Worker"){
+	$args.Add("-worker")
+	$args.Add("-noweb")
+}
+
+if($platformRole -eq "Both"){
+	$args.Add("-worker")
+}
+
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "C:\Cireson.Platform.Host\Cireson.Platform.Host.InstallLog.txt"
 
