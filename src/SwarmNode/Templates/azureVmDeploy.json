@@ -158,9 +158,22 @@
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[toLower(concat(parameters('dbName'),'svr', uniqueString(resourceGroup().id)))]",
     "dbName": "[parameters('dbName')]",
-    "connectionString": "[concat('Server=tcp:',variables('sqlsvrName'),'.database.windows.net,1433;Data Source=',variables('sqlsvrName'),'.database.windows.net;Initial Catalog=',variables('dbName'),';Persist Security Info=False;User ID=',parameters('adminUsername'),';Password=',parameters('adminPassword'),';Pooling=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;')]"
+    "connectionString": "[concat('Server=tcp:',variables('sqlsvrName'),'.database.windows.net,1433;Data Source=',variables('sqlsvrName'),'.database.windows.net;Initial Catalog=',variables('dbName'),';Persist Security Info=False;User ID=',parameters('adminUsername'),';Password=',parameters('adminPassword'),';Pooling=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;')]",
+    "linkedTemplateBaseUrl": "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/"
   },
   "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "vnetDeployTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('linkedTemplateBaseUrl'), 'vnetdeploy.json')]",
+          "contentVersion": "1.0.0.0"
+        }        
+      }
+    },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('networkSecurityGroupName')]",
