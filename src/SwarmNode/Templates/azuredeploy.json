@@ -37,9 +37,9 @@
 
     "adminUsername": {
       "type": "string",
-      "defaultValue": "pzerger",
+      "defaultValue": "ciresonAdmin",
       "metadata": {
-        "description": "Username for the Virtual Machine."
+        "description": "Administrative and Service Username for the Virtual Machine and SQL Server."
       }
     },
 

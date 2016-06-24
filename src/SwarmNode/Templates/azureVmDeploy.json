@@ -2,7 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-
     "VMName": {
       "type": "string",
       "defaultValue": "ciresonplatform",
@@ -37,7 +36,7 @@
 
     "adminUsername": {
       "type": "string",
-      "defaultValue": "pzerger",
+      "defaultValue": "ciresonAdmin",
       "metadata": {
         "description": "Username for the Virtual Machine."
       }
@@ -332,7 +331,7 @@
       },
       "resources": [
         {
-          "name": "containerConfiguration",
+          "name": "PlatformConfiguration",
           "type": "extensions",
           "location": "[parameters('location')]",
           "apiVersion": "2015-06-15",
@@ -341,7 +340,7 @@
             "[concat('Microsoft.Sql/servers', '/', variables('sqlsvrName'))]"
           ],
           "tags": {
-            "displayName": "containerConfiguration"
+            "displayName": "PlatformConfiguration"
           },
           "properties": {
             "publisher": "Microsoft.Compute",
@@ -358,7 +357,7 @@
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' > c:\cireson.platform.host\azureinstall.log', )]"
             }
           }
         }
@@ -420,3 +419,7 @@
     }
   }
 }
+/*
+  todo: need to add ssl support.
+  https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/
+*/
