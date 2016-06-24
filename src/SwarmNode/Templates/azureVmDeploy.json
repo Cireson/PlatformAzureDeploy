@@ -10,27 +10,19 @@
       }
     },
 
-    "existingVnetResourceGroup": {
+    "vnetName": {
       "type": "string",
-      "defaultValue": "CiresonSwarm",
+      "defaultValue": "CiresonVNet",
       "metadata": {
-        "description": "Existing Azure Resource Group."
+        "description": "New Azure virtual network name."
       }
     },
 
-    "existingVnetName": {
-      "type": "string",
-      "defaultValue": "CiresonSwarm",
-      "metadata": {
-        "description": "Existing Azure virtual network."
-      }
-    },
-
-    "existingSubnetName": {
+    "vnetSubnetName": {
       "type": "string",
       "defaultValue": "default",
       "metadata": {
-        "description": "Existing Azure subnet."
+        "description": "New Azure subnet name."
       }
     },
 
@@ -153,27 +145,20 @@
     "vmStorageAccountContainerName": "vhds",
     "apiVersion": "2015-05-01-preview",
     "virtualNetworkName": "parameters('existingVnetName')",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('existingVNetName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('existingSubnetName'))]",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[toLower(concat(parameters('dbName'),'svr', uniqueString(resourceGroup().id)))]",
     "dbName": "[parameters('dbName')]",
     "connectionString": "[concat('Server=tcp:',variables('sqlsvrName'),'.database.windows.net,1433;Data Source=',variables('sqlsvrName'),'.database.windows.net;Initial Catalog=',variables('dbName'),';Persist Security Info=False;User ID=',parameters('adminUsername'),';Password=',parameters('adminPassword'),';Pooling=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;')]",
-    "linkedTemplateBaseUrl": "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/"
+    "linkedTemplateBaseUrl": "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/",
+    "vnetName": "[parameters('vnetName')]",
+    "vnetPrefix": "10.0.0.0/16",
+    "vnetSubnet1Name": "[parameters('vnetSubnetName')]",
+    "vnetSubnet1Prefix": "10.0.0.0/24",
+    "NicVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+    "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]"
+
   },
   "resources": [
-    {
-      "apiVersion": "2015-01-01",
-      "name": "vnetDeployTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('linkedTemplateBaseUrl'), 'vnetdeploy.json')]",
-          "contentVersion": "1.0.0.0"
-        }        
-      }
-    },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('networkSecurityGroupName')]",
@@ -265,35 +250,6 @@
         "dnsSettings": {
           "domainNameLabel": "[tolower(variables('dnsNameForPublicIP'))]"
         }
-      }
-    },
-
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "displayName": "NetworkInterface"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/',variables('dnsNameForPublicIP'))]"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('existingVNetResourceGroup'), '/providers/Microsoft.Network/virtualNetworks/', parameters('existingVNetName'), '/subnets/', parameters('existingSubnetName'))]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('dnsNameForPublicIP'))]"
-              }
-            }
-          }
-        ]
       }
     },
 
@@ -423,6 +379,56 @@
           }
         }
       ]
+    },
+    {
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "vnet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vnetPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('vnetSubnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('vnetSubnet1Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('nicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+      ],
+      "tags": {
+        "displayName": "Nic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('NicSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
     }
   ],
   "outputs": {
@@ -432,4 +438,3 @@
     }
   }
 }
-
