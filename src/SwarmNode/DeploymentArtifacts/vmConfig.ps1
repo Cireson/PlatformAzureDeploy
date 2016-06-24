@@ -25,3 +25,5 @@ param
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList "-i -sn CiresonPlatform -sdn CiresonPlatform -usr $sqlUserName -pwd $sqlPassword" 
 
+#todo: need to add ssl support.
+#https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/

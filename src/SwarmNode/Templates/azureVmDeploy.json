@@ -419,7 +419,4 @@
     }
   }
 }
-/*
-  todo: need to add ssl support.
-  https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/
-*/
+
