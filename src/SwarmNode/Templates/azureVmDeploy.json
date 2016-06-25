@@ -450,6 +450,10 @@
     }
   ],
   "outputs": {
+    "platformUrl": {
+      "type": "string",
+      "value": "[concat('http://',reference(variables('dnsNameForPublicIP')).dnsSettings.fqdn, '/api/')]"
+    },
     "ConnectionString": {
       "type": "string",
       "value": "[variables('connectionString')]"
