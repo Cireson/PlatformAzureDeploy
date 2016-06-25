@@ -37,5 +37,8 @@ if($platformRole -eq "Both"){
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "C:\Cireson.Platform.Host\Cireson.Platform.Host.InstallLog.txt"
 
+#open port 80 and 443
+netsh advfirewall firewall add rule name="Http 80" dir=in action=allow protocol=TCP localport=80
+netsh advfirewall firewall add rule name="Https 443" dir=in action=allow protocol=TCP localport=443
 #todo: need to add ssl support.
 #https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/
