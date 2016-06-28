@@ -9,7 +9,6 @@
         "description": "This name will also be used to prefix the network security group, storage, virtual network, network card, subnet and public IP address name."
       }
     },
-
     "vnetName": {
       "type": "string",
       "defaultValue": "CiresonVNet",
@@ -17,7 +16,6 @@
         "description": "New Azure virtual network name."
       }
     },
-
     "vnetSubnetName": {
       "type": "string",
       "defaultValue": "default",
@@ -25,7 +23,6 @@
         "description": "New Azure subnet name."
       }
     },
-
     "adminUsername": {
       "type": "string",
       "defaultValue": "ciresonAdmin",
@@ -33,28 +30,11 @@
         "description": "Username for the Virtual Machine."
       }
     },
-
     "adminPassword": {
       "type": "securestring",
       "defaultValue": "CiresonP@ssw0rd1!",
       "metadata": {
         "description": "Password for the Virtual Machine."
-      }
-    },
-
-    "location": {
-      "type": "string",
-      "defaultValue": "East US 2",
-      "allowedValues": [
-        "East US",
-        "East US 2",
-        "West US",
-        "North Europe",
-        "East Asia",
-        "Southeast Asia"
-      ],
-      "metadata": {
-        "description": "Resource Location"
       }
     },
     "vmSize": {
@@ -170,14 +150,13 @@
     "vnetSubnet1Prefix": "10.0.0.0/24",
     "NicVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
     "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]"
-
   },
   "resources": [
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('networkSecurityGroupName')]",
       "apiVersion": "[variables('apiVersion')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
           {
@@ -255,7 +234,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('dnsNameForPublicIP')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "PublicIPAddress"
       },
@@ -271,7 +250,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[parameters('vmName')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "VirtualMachine"
       },
@@ -314,9 +293,9 @@
       },
       "resources": [
         {
-          "name": "PlatformConfiguration",
+          "name": "PlatformConfiguration", 
           "type": "extensions",
-          "location": "[parameters('location')]",
+          "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
           "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
