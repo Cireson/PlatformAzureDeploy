@@ -315,7 +315,7 @@
           "name": "PlatformConfiguration",
           "type": "extensions",
           "location": "[resourceGroup().location]",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2016-04-30-preview",
           "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
             "[concat('Microsoft.Sql/servers', '/', variables('sqlsvrName'))]"
