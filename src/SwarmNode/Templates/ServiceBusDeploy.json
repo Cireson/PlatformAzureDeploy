@@ -44,7 +44,31 @@
       "sku": {
         "name": "Standard",
         "tier": "Standard"
-      }
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('sbVersion')]",
+          "name": "[parameters('serviceBusTopicName')]",
+          "type": "Topics",
+          "dependsOn": [
+            "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
+          ],
+          "properties": {
+            "path": "[parameters('serviceBusTopicName')]"
+          },
+          "resources": [
+            {
+              "apiVersion": "[variables('sbVersion')]",
+              "name": "[parameters('serviceBusSubscriptionName')]",
+              "type": "Subscriptions",
+              "dependsOn": [
+                "[parameters('serviceBusTopicName')]"
+              ],
+              "properties": { }
+            }
+          ]
+        }
+      ]
     }
   ],
   "outputs": {
