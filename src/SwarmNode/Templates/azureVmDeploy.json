@@ -140,7 +140,7 @@
     "publicIPAddressType": "Dynamic",
     "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]",
     "vmStorageAccountContainerName": "vhds",
-    "apiVersion": "2015-08-01",
+    "apiVersion": "2015-08-01-preview",
     "virtualNetworkName": "parameters('existingVnetName')",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[toLower(concat(parameters('dbName'),'svr', uniqueString(resourceGroup().id)))]",
@@ -272,8 +272,7 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
-        "[concat('Microsoft.ServiceBus/Namespaces/', variables('serviceBusNamespace'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -313,7 +312,7 @@
           "name": "PlatformConfiguration",
           "type": "extensions",
           "location": "[resourceGroup().location]",
-          "apiVersion": "2015-06-15",
+          "apiVersion": "2015-06-01",
           "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
             "[concat('Microsoft.Sql/servers', '/', variables('sqlsvrName'))]"
