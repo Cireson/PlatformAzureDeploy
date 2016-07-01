@@ -153,7 +153,7 @@
     "vnetSubnet1Prefix": "10.0.0.0/24",
     "NicVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
     "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]",
-    "sbVersion": "2015-08-01",
+    "sbVersion": "[providers('Microsoft.ServiceBus', 'namespaces').apiVersions[0]]",
     "serviceBusNamespace": "[concat('ciresonSB',  uniqueString(resourceGroup().id))]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
     "serviceBusAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]",
@@ -228,7 +228,7 @@
       }
     },
     {
-      "apiVersion": "[variables('sbVersion')",
+      "apiVersion": "[variables('sbVersion')]",
 
       "name": "[variables('serviceBusNamespace')]",
       "type": "Microsoft.ServiceBus/Namespaces",
