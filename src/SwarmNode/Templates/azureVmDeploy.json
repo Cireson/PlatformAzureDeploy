@@ -140,7 +140,7 @@
     "publicIPAddressType": "Dynamic",
     "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]",
     "vmStorageAccountContainerName": "vhds",
-    "apiVersion": "2015-08-01-preview",
+    "apiVersion": "2015-05-01-preview",
     "virtualNetworkName": "parameters('existingVnetName')",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[toLower(concat(parameters('dbName'),'svr', uniqueString(resourceGroup().id)))]",
