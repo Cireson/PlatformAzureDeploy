@@ -152,7 +152,10 @@
     "vnetSubnet1Name": "[parameters('vnetSubnetName')]",
     "vnetSubnet1Prefix": "10.0.0.0/24",
     "NicVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-    "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]"
+    "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]",
+    "serviceBusNamespace": "[concat('ciresonSB',  uniqueString(resourceGroup().id))]",
+    "defaultSASKeyName": "RootManageSharedAccessKey",
+    "serviceBusAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]"
   },
   "resources": [
     {
@@ -259,7 +262,8 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.ServiceBus/Namespaces/', variables('serviceBusNamespace'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -296,7 +300,7 @@
       },
       "resources": [
         {
-          "name": "PlatformConfiguration", 
+          "name": "PlatformConfiguration",
           "type": "extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
@@ -322,7 +326,7 @@
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), '-serviceBusConnectionString',reference(variables('serviceBusNamespace')).NamespaceConnectionString)]"
             }
           }
         }
@@ -428,6 +432,23 @@
             }
           }
         ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[variables('serviceBusNamespace')]",
+      "type": "Microsoft.ServiceBus/Namespaces",
+      "location": "[resourceGroup().location]",
+      "kind": "Messaging",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
+      "outputs": {
+        "NamespaceConnectionString": {
+          "type": "string",
+          "value": "[listkeys(variables('serviceBusAuthRuleResourceId'), variables('apiVersion')).primaryConnectionString]"
+        }
       }
     }
   ],

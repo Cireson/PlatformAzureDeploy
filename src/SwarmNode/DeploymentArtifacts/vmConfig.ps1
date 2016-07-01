@@ -10,7 +10,8 @@ param
     [string]$sqlUserName = $(throw "sqlUserName is required."),
     [string]$sqlPassword = $(throw "sqlPassword is required."),
     [string]$platformVersion = $(throw "platformVersion is required."),
-	[string]$platformRole = "Web"
+	[string]$platformRole = "Web",
+	[string]$serviceBusConnectionString = ""
 )
 
 .\ConfigureWinRM.ps1 $HostName
@@ -33,6 +34,14 @@ if($platformRole -eq "Worker"){
 if($platformRole -eq "Both"){
 	$args.Add("-worker")
 }
+
+#set the connection string for the servicebus
+[xml]$config = Get-Content  "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config"
+$sbConnectionString = $config.CreateElement("add")
+$sbConnectionString.SetAttribute("key","ServiceBusConnectionString")
+$sbConnectionString.SetAttribute("value",$serviceBusConnectionString)
+$config.configuration.appSettings.AppendChild($sbConnectionString)
+$config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "C:\Cireson.Platform.Host\Cireson.Platform.Host.InstallLog.txt"
