@@ -443,7 +443,7 @@
       "sku": {
         "name": "Standard",
         "tier": "Standard"
-      },
+      }
     }
   ],
   "outputs": {
