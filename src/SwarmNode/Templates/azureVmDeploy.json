@@ -105,7 +105,7 @@
     },
     "platformVersion": {
       "type": "string",
-      "defaultValue": "1.0.68-rc0011",
+      "defaultValue": "1.0.68-rc0014",
       "allowedValues": [
         "1.0.68-rc0014",
         "1.0.68-rc0013",
@@ -140,7 +140,7 @@
     "publicIPAddressType": "Dynamic",
     "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]",
     "vmStorageAccountContainerName": "vhds",
-    "apiVersion": "2015-05-01-preview",
+    "apiVersion": "2015-08-01",
     "virtualNetworkName": "parameters('existingVnetName')",
     "ciresonplatformName": "[concat('ciresonplatform', uniqueString(resourceGroup().id))]",
     "sqlsvrName": "[toLower(concat(parameters('dbName'),'svr', uniqueString(resourceGroup().id)))]",
