@@ -15,16 +15,6 @@ param
 )
 $installRoot = "C:\Cireson.Platform.Host"
 
-function writeInstallableCpexJson(){
-	$cpexJson = @"
-	[{
-		"Name":"Cireson.Platform.Extension.WebUi",
-		"Version":"0.1.0-rc0123"
-	}]
-"@
-	$cpexJson | Set-Content "$installRoot\cpex\armInstall.json"
-}
-
 .\ConfigureWinRM.ps1 $HostName
 
 .\PlatformDownload.ps1 -path 'c:\Cireson.Platform.Host' -sqlServer $sqlServer -dbName $dbName -sqlUserName $sqlUserName -sqlPassword $sqlPassword -version $platformVersion
@@ -56,7 +46,14 @@ $config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 
 
 
-writeInstallableCpexJson 
+#create cpexinstall json
+$cpexJson = @"
+[{
+	"Name":"Cireson.Platform.Extension.WebUi",
+	"Version":"0.1.0-rc0123"
+}]
+"@
+$cpexJson | Set-Content "$installRoot\cpex\armInstall.json"
 
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "$installRoot\Cireson.Platform.Host.InstallLog.txt"
