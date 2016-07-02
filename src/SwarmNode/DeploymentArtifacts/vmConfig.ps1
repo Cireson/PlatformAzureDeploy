@@ -53,7 +53,7 @@ $cpexJson = @"
 	"Version":"0.1.0-rc0123"
 }]
 "@
-Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
+#Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "$installRoot\Cireson.Platform.Host.InstallLog.txt"
