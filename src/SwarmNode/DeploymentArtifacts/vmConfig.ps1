@@ -15,6 +15,16 @@ param
 )
 $installRoot = "C:\Cireson.Platform.Host"
 
+function writeInstallableCpexJson(){
+	$cpexJson = @"
+	[{
+		"Name":"Cireson.Platform.Extension.WebUi",
+		"Version":"0.1.0-rc0123"
+	}]
+"@
+	$cpexJson | Set-Content "$installRoot\cpex\armInstall.json"
+}
+
 .\ConfigureWinRM.ps1 $HostName
 
 .\PlatformDownload.ps1 -path 'c:\Cireson.Platform.Host' -sqlServer $sqlServer -dbName $dbName -sqlUserName $sqlUserName -sqlPassword $sqlPassword -version $platformVersion
@@ -45,6 +55,7 @@ $config.configuration.appSettings.AppendChild($sbConnectionString)
 $config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 
 
+
 writeInstallableCpexJson 
 
 #install platform service locally, and start it running
@@ -56,13 +67,3 @@ netsh advfirewall firewall add rule name="Https 443" dir=in action=allow protoco
 #todo: need to add ssl support.
 #https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/
 
-
-function writeInstallableCpexJson(){
-	$cpexJson = @"
-	[{
-		"Name":"Cireson.Platform.Extension.WebUi",
-		"Version":"0.1.0-rc0123"
-	}]
-"@
-	$cpexJson | Set-Content "$installRoot\cpex\armInstall.json"
-}
