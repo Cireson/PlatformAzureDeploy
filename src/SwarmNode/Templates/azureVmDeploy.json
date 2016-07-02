@@ -330,13 +330,13 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/vmConfig.ps1",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/ConfigureWinRM.ps1",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/makecert.exe",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/winrmconf.cmd",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/FixTP5NtwkBug.ps1",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
-                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/lwNuget/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/vmConfig.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/ConfigureWinRM.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/makecert.exe",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/winrmconf.cmd",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/FixTP5NtwkBug.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
+                "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
               "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), ' -serviceBusConnectionString', listkeys(variables('serviceBusAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString)]"
             }
