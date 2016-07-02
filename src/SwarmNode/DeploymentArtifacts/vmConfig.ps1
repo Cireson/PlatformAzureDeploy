@@ -13,6 +13,7 @@ param
 	[string]$platformRole = "Web",
 	[string]$serviceBusConnectionString = ""
 )
+$installRoot = "C:\Cireson.Platform.Host"
 
 .\ConfigureWinRM.ps1 $HostName
 
@@ -36,18 +37,32 @@ if($platformRole -eq "Both"){
 }
 
 #set the connection string for the servicebus
-[xml]$config = Get-Content  "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config"
+[xml]$config = Get-Content  "$installRoot\Cireson.Platform.Host.exe.config"
 $sbConnectionString = $config.CreateElement("add")
 $sbConnectionString.SetAttribute("key","ServiceBusConnectionString")
 $sbConnectionString.SetAttribute("value",$serviceBusConnectionString)
 $config.configuration.appSettings.AppendChild($sbConnectionString)
 $config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 
+
+writeInstallableCpexJson 
+
 #install platform service locally, and start it running
-start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "C:\Cireson.Platform.Host\Cireson.Platform.Host.InstallLog.txt"
+start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "$installRoot\Cireson.Platform.Host.InstallLog.txt"
 
 #open port 80 and 443
 netsh advfirewall firewall add rule name="Http 80" dir=in action=allow protocol=TCP localport=80
 netsh advfirewall firewall add rule name="Https 443" dir=in action=allow protocol=TCP localport=443
 #todo: need to add ssl support.
 #https://azure.microsoft.com/en-us/documentation/articles/app-service-web-arm-with-msdeploy-provision/
+
+
+function writeInstallableCpexJson(){
+	$cpexJson = @"
+	[{
+		"Name":"Cireson.Platform.Extension.WebUi",
+		"Version":"0.1.0-rc0123"
+	}]
+"@
+	$cpexJson | Set-Content "$installRoot\cpex\armInstall.json"
+}
