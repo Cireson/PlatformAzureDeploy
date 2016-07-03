@@ -19,8 +19,6 @@ $installRoot = "C:\Cireson.Platform.Host"
 
 .\PlatformDownload.ps1 -path 'c:\Cireson.Platform.Host' -sqlServer $sqlServer -dbName $dbName -sqlUserName $sqlUserName -sqlPassword $sqlPassword -version $platformVersion
 
-.\FixTP5NtwkBug.ps1 
-
 .\AddAccountToLogonAsService $sqlUserName
 
 #todo: need a way to specify an ssl cert from storage, install it locally, and set it up with the service.
@@ -53,7 +51,7 @@ $cpexJson = @"
 	"Version":"0.1.0-rc0123"
 }]
 "@
-#Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
+Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "$installRoot\Cireson.Platform.Host.InstallLog.txt"
