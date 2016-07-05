@@ -55,10 +55,6 @@ $cpexJson = @"
 {
 	"Name":"Cireson.AssetManagement.Core",
 	"Version":"0.1.0-rc0008"
-},
-{
-    "Name": "Extension.AzureServiceBus",
-    "Version": "0.1.0-rc0001"
 }
 ]
 "@
