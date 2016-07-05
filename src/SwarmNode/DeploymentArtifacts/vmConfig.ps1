@@ -45,11 +45,22 @@ $config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 new-item "$installRoot\cpex" -ItemType Directory
 
 #create cpexinstall json
+#***Add additional cpex nuget references as needed.
 $cpexJson = @"
-[{
+[
+{
 	"Name":"Cireson.Platform.Extension.WebUi",
 	"Version":"0.1.0-rc0123"
-}]
+},
+{
+	"Name":"Cireson.AssetManagement.Core",
+	"Version":"0.1.0-rc0008"
+},
+{
+    "Name": "Extension.AzureServiceBus",
+    "Version": "0.1.0-rc0001"
+}
+]
 "@
 Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 

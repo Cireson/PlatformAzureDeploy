@@ -80,19 +80,16 @@
     },
     "dbEdition": {
       "type": "string",
-      "defaultValue": "Basic",
+      "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard",
         "Premium"
       ]
     },
     "dbRequestedServiceObjectiveName": {
       "type": "string",
-      "defaultValue": "Basic",
+      "defaultValue": "S1",
       "allowedValues": [
-        "Basic",
-        "S0",
         "S1",
         "S2",
         "P1",
