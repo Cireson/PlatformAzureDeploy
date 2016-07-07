@@ -50,11 +50,11 @@ $cpexJson = @"
 [
 {
 	"Name":"Cireson.Platform.Extension.WebUi",
-	"Version":"0.1.0-rc0123"
+	"Version":"0.1.0-rc0125"
 },
 {
 	"Name":"Cireson.AssetManagement.Core",
-	"Version":"0.1.0-rc0008"
+	"Version":"0.1.0-rc0012"
 }
 ]
 "@

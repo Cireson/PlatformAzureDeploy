@@ -102,8 +102,10 @@
     },
     "platformVersion": {
       "type": "string",
-      "defaultValue": "1.0.68-rc0015",
+      "defaultValue": "1.0.68-rc0017",
       "allowedValues": [
+        "1.0.68-rc0017",
+        "1.0.68-rc0016",
         "1.0.68-rc0015",
         "1.0.68-rc0014",
         "1.0.68-rc0013",
