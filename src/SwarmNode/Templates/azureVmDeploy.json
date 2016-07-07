@@ -127,8 +127,8 @@
     }
   },
   "variables": {
-    "windowsOSVersionContainers": "2016-Technical-Preview-with-Containers",
-    "windowsOSVersion": "2012-R2-Datacenter",
+    "windowsOSVersion": "2016-Technical-Preview-with-Containers",
+    "windowsOSVersion12": "2012-R2-Datacenter",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "OSDiskName": "[concat(parameters('VMName'),'_osdisk')]",
