@@ -6,7 +6,7 @@ Param(
 [string]$dbName = "CiresonPlatform",
 [string]$sqlUserName = "sqladmin",
 [string]$sqlPassword = "P@ssw0rd1!",
-[string]$version = "1.0.68-rc0008"
+[string]$version = "1.0.68-rc0018"
 )
 
 if(Test-Path $path){
