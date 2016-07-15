@@ -13,7 +13,7 @@ $adminPassword = ""
 $defaultRepository = "https://packages.nuget.org/api/v2"
 
 $deploymentTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/azureVmDeploy.json"
-
+$serviceBusTemplateUrl =""
 [string[]]$repoUrls =  $defaultRepository
 
 Write-Host $repoUrls
@@ -225,11 +225,29 @@ function choosePassword(){
 }
 
 function choosePlatformVersion(){
+    writeCurrentState
     $platformVersions = getPlatformVersions $true
 
     $platformVersion = promptForChoice "Please select the version of the Platform you wish to install" $platformVersions
 
-    setParameterValue "PlatformVersion" $platformVersion
+    setParameterValue "PlatformVersion" $platformVersions[$platformVersion]
+}
+
+function chooseServiceBus(){
+    writeCurrentState
+    $useExisting = promptForChoice "Would you like to connect to an existing Service Bus, or Create a New one?" "Existing", "New"
+
+    if($useExisting -eq 0){
+        $existingSBs = Get-AzureSBNamespace | where {$_.Status -eq "Active"}
+        $options = $existingSBs | select -ExpandProperty Name 
+        $selectedSb =promptForChoice "Select the Service Bus that you wish to connect this instance to." $options
+        setParameterValue "ServiceBus" $existingSBs[$selectedSb].ConnectionString
+        setParameterValue "CreateNewServiceBus" $true
+    }else{
+        $newSbName = promptForText "Please enter the desired name for the new ServiceBus"
+        setParameterValue "NewServiceBusName" $newSbName
+        setParameterValue "CreateNewServiceBus" $true
+    }
 
 }
 
@@ -254,19 +272,36 @@ function getTemplateParams(){
         "vmSize"="Standard_D1";
         "dbName"="CiresonPlatform";
         "platformVersion"="$(getParameterValue 'PlatformVersion')";
+        "additionalCpex"="$(getParameterValue 'additionalCpex')"
         }
 
     return $params
 }
 
+function deployServiceBus(){
+    
+}
+
 function deployAzure(){
     if($namedParameters["CreateResourceGroup"] -eq $true){
+        Write-Host "Creating Resource Group $($namedParameters["ResourceGroupName"])"
         New-AzureRmResourceGroup -Name $namedParameters["ResourceGroupName"] -Location "East US 2"
+        Write-Host "Done Creating Resource Group"
     }
 
     $templateParams = getTemplateParams
+    
+    deployServiceBus
 
-    New-AzureRmResourceGroupDeployment -Name $namedParameters["DeploymentName"] -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $deploymentTemplateUrl -TemplateParameterObject $templateParams
+    Write-Host $templateParams
+
+    Write-Host "Deploying, this may take some time.  You can check the progress of the deployment at https://portal.azure.com"
+
+    $results = New-AzureRmResourceGroupDeployment -Name $namedParameters["DeploymentName"] -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $deploymentTemplateUrl -TemplateParameterObject $templateParams
+
+    Write-Host "Done Deploying."
+
+    Write-Host "You can view the deployed service here: $($results.PlatformUrl)"
 }
 
 function loginToAzureIfNeeded () {
@@ -281,22 +316,24 @@ function loginToAzureIfNeeded () {
 }
 
 
-showEula
+#showEula
+#
+#loginToAzureIfNeeded
+#
+#chooseSubscription
+#
+#chooseResourceGroup
+#
+#chooseCpex
+#
+#chooseName
+#
+#chooseUserName
+#
+#$adminPassword = choosePassword
+#
+#choosePlatformVersion
 
-loginToAzureIfNeeded
+chooseServiceBus
 
-chooseSubscription
-
-chooseResourceGroup
-
-chooseCpex
-
-chooseName
-
-chooseUserName
-
-$adminPassword = choosePassword
-
-choosePlatformVersion
-
-deployAzure
+#deployAzure

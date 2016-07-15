@@ -114,7 +114,7 @@
     },
     "additionalCpex": {
       "type": "string",
-      "defaultValue": "[[]]"
+      "defaultValue": "[[]"
     }
   },
   "variables": {

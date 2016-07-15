@@ -43,6 +43,7 @@
     <None Include="DeploymentArtifacts\PlatformDownload.ps1" />
     <None Include="DeploymentArtifacts\winrmconf.cmd" />
     <None Include="Scripts\PlatformSetupWizard.ps1" />
+    <None Include="Templates\azureServiceBusDeploy.json" />
     <None Include="Templates\ServiceBusDeploy.json" />
     <None Include="Templates\vnetdeploy.json" />
   </ItemGroup>

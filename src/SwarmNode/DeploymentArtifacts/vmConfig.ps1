@@ -12,6 +12,7 @@ param
     [string]$platformVersion = $(throw "platformVersion is required."),
 	[string]$platformRole = "Web",
 	[string]$serviceBusConnectionString = ""
+	[string]$additionalCpex = ""
 )
 $installRoot = "C:\Cireson.Platform.Host"
 
@@ -46,18 +47,8 @@ new-item "$installRoot\cpex" -ItemType Directory
 
 #create cpexinstall json
 #***Add additional cpex nuget references as needed.
-$cpexJson = @"
-[
-{
-	"Name":"Cireson.Platform.Extension.WebUi",
-	"Version":"0.1.0-rc0129"
-},
-{
-	"Name":"Cireson.AssetManagement.Core",
-	"Version":"0.1.0-rc0018"
-}
-]
-"@
+$cpexJson = $additionalCpex
+
 Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 
 #install platform service locally, and start it running
