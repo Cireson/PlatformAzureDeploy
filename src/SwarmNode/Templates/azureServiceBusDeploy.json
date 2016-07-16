@@ -19,7 +19,7 @@
   "resources": [
     {
       "apiVersion": "[variables('sbVersion')]",
-      "name": "[parameters('serviceBusNamespace')]",
+      "name": "[variables('serviceBusNamespace')]",
       "type": "Microsoft.ServiceBus/Namespaces",
       "location": "[variables('location')]",
       "kind": "Messaging",

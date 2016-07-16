@@ -327,7 +327,10 @@ function createResourceGroup(){
 function deployServiceBus(){
     if($namedParameters["CreateNewServiceBus"] -eq $true){
 		Write-Host "Creating service bus $($namedParameters["ServiceBusNamespace"])"
-		$results = New-AzureSBNamespace -Name $($namedParameters["ServiceBusNamespace"]) -NamespaceType Messaging -Location $namedParameters["Location"]
+		#$results = New-AzureSBNamespace -Name $($namedParameters["ServiceBusNamespace"]) -NamespaceType Messaging -Location $namedParameters["Location"] -CreateACSNamespace $false 
+        $templateParams = @{"serviceBusNamespace" = "$($namedParameters['ServiceBusNamespace'])"}
+        $results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters['DeploymentName'])SB" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams
+
     }
 }
 
