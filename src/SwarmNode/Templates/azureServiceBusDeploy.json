@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "serviceBusNamespaceName": {
+    "serviceBusNamespace": {
       "type": "string",
       "metadata": {
         "description": "Name of the Service Bus namespace"
@@ -12,13 +12,14 @@
   "variables": {
     "location": "[resourceGroup().location]",
     "sbVersion": "[providers('Microsoft.ServiceBus', 'namespaces').apiVersions[0]]",
+    "serviceBusNamespace": "[concat('ciresonSB',  uniqueString(resourceGroup().id))]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
-    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
+    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]",
   },
   "resources": [
     {
       "apiVersion": "[variables('sbVersion')]",
-      "name": "[parameters('serviceBusNamespaceName')]",
+      "name": "[parameters('serviceBusNamespace')]",
       "type": "Microsoft.ServiceBus/Namespaces",
       "location": "[variables('location')]",
       "kind": "Messaging",

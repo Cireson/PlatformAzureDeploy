@@ -13,7 +13,7 @@ $adminPassword = ""
 $defaultRepository = "https://packages.nuget.org/api/v2"
 
 $deploymentTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/azureVmDeploy.json"
-$serviceBusTemplateUrl =""
+$serviceBusTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/azureServiceBusDeploy.json"
 [string[]]$repoUrls =  $defaultRepository
 
 Write-Host $repoUrls
@@ -241,11 +241,11 @@ function chooseServiceBus(){
         $existingSBs = Get-AzureSBNamespace | where {$_.Status -eq "Active"}
         $options = $existingSBs | select -ExpandProperty Name 
         $selectedSb =promptForChoice "Select the Service Bus that you wish to connect this instance to." $options
-        setParameterValue "ServiceBus" $existingSBs[$selectedSb].ConnectionString
-        setParameterValue "CreateNewServiceBus" $true
+        setParameterValue "ServiceBusConnectionString" $existingSBs[$selectedSb].ConnectionString
+        setParameterValue "CreateNewServiceBus" $false
     }else{
         $newSbName = promptForText "Please enter the desired name for the new ServiceBus"
-        setParameterValue "NewServiceBusName" $newSbName
+        setParameterValue "ServiceBusNamespace" $newSbName
         setParameterValue "CreateNewServiceBus" $true
     }
 
@@ -272,22 +272,32 @@ function getTemplateParams(){
         "vmSize"="Standard_D1";
         "dbName"="CiresonPlatform";
         "platformVersion"="$(getParameterValue 'PlatformVersion')";
-        "additionalCpex"="$(getParameterValue 'additionalCpex')"
+        "additionalCpex"="$(getParameterValue 'additionalCpex')";
+        "serviceBusConnectionString"="$(getParameterValue 'serviceBusConnectionString')";
+        "serviceBusNamespace"="$(getParameterValue 'serviceBusNamespace')";
         }
 
     return $params
 }
 
-function deployServiceBus(){
-    
-}
-
-function deployAzure(){
-    if($namedParameters["CreateResourceGroup"] -eq $true){
+function createResourceGroup(){
+	if($namedParameters["CreateResourceGroup"] -eq $true){
         Write-Host "Creating Resource Group $($namedParameters["ResourceGroupName"])"
         New-AzureRmResourceGroup -Name $namedParameters["ResourceGroupName"] -Location "East US 2"
         Write-Host "Done Creating Resource Group"
     }
+}
+
+function deployServiceBus(){
+    if($namedParameters["CreateNewServiceBus"] -eq $true){
+		$templateParams = @{"serviceBusNamespace"=$namedParameters["ServiceBusNamespace"]}
+        Write-Host "Creating service bus $($namedParameters["ServiceBusNamespace"])"
+		$results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters["DeploymentName"])ServiceBus" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams 
+    }
+}
+
+function deployAzure(){
+ 
 
     $templateParams = getTemplateParams
     
@@ -308,7 +318,7 @@ function loginToAzureIfNeeded () {
     $Error.Clear()
     Get-AzureRmContext -ErrorAction Continue
     foreach ($errorItem in $Error) {
-        if ($errorItem.Exception.ToString() -like "*Run Login-AzureRmAccount to login.*") {
+        if ($errorItem.Exception.ToString() -like "*Run Login-AzureRmAccount to login*") {
             Login-AzureRmAccount
         }
     }
@@ -318,11 +328,11 @@ function loginToAzureIfNeeded () {
 
 #showEula
 #
-#loginToAzureIfNeeded
+loginToAzureIfNeeded
 #
 #chooseSubscription
 #
-#chooseResourceGroup
+chooseResourceGroup
 #
 #chooseCpex
 #
@@ -335,5 +345,9 @@ function loginToAzureIfNeeded () {
 #choosePlatformVersion
 
 chooseServiceBus
+
+createResourceGroup
+
+deployServiceBus
 
 #deployAzure

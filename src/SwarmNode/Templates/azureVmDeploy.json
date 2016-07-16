@@ -37,6 +37,13 @@
         "description": "Password for the Virtual Machine."
       }
     },
+    "serviceBusConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Connection string for connecting to the shared service bus."
+      }
+    },
     "vmSize": {
       "type": "string",
       "defaultValue": "Standard_D1",
@@ -144,12 +151,7 @@
     "vnetSubnet1Name": "[parameters('vnetSubnetName')]",
     "vnetSubnet1Prefix": "10.0.0.0/24",
     "NicVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-    "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]",
-    "sbVersion": "[providers('Microsoft.ServiceBus', 'namespaces').apiVersions[0]]",
-    "serviceBusNamespace": "[concat('ciresonSB',  uniqueString(resourceGroup().id))]",
-    "defaultSASKeyName": "RootManageSharedAccessKey",
-    "serviceBusAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]",
-    "keyGeneratorTemplateUri": "https://raw.githubusercontent.com/sjkp/Azure.ARM.ServiceBus/master/Azure.ARM.ServiceBus/Templates/keygenerator.json"
+    "NicSubnetRef": "[concat(variables('NicVnetID'), '/subnets/', variables('vnetSubnet1Name'))]"
   },
   "resources": [
    {
@@ -217,18 +219,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "apiVersion": "[variables('sbVersion')]",
-
-      "name": "[variables('serviceBusNamespace')]",
-      "type": "Microsoft.ServiceBus/Namespaces",
-      "location": "[resourceGroup().location]",
-      "kind": "Messaging",
-      "sku": {
-        "name": "Standard",
-        "tier": "Standard"
       }
     },
     {
@@ -330,7 +320,7 @@
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), ' -serviceBusConnectionString', listkeys(variables('serviceBusAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString, '-additionalCpexJson', parameters('additionalCpex'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), ' -serviceBusConnectionString', parameters('serviceBusConnectionString'), '-additionalCpexJson', parameters('additionalCpex'))]"
             }
           }
         }
@@ -447,10 +437,6 @@
     "ConnectionString": {
       "type": "string",
       "value": "[variables('connectionString')]"
-    },
-    "ServiceBusConnectionString": {
-      "type": "string",
-      "value": "[listkeys(variables('serviceBusAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
     }
   }
 }
