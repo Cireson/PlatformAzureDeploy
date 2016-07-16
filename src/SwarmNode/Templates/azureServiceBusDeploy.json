@@ -14,7 +14,7 @@
     "sbVersion": "[providers('Microsoft.ServiceBus', 'namespaces').apiVersions[0]]",
     "serviceBusNamespace": "[concat('ciresonSB',  uniqueString(resourceGroup().id))]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
-    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]",
+    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]"
   },
   "resources": [
     {
