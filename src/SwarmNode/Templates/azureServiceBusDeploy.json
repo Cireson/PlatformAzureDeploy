@@ -13,8 +13,6 @@
     "location": "[resourceGroup().location]",
     "sbVersion": "[providers('Microsoft.ServiceBus', 'namespaces').apiVersions[0]]",
     "serviceBusNamespace": "[concat(parameters('serviceBusNamespace'),  uniqueString(resourceGroup().id))]",
-    "defaultSASKeyName": "RootManageSharedAccessKey",
-    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespace'), variables('defaultSASKeyName'))]"
   },
   "resources": [
     {
@@ -30,13 +28,9 @@
     }
 ],
   "outputs": {
-    "NamespaceConnectionString": {
+    "Namespace": {
       "type": "string",
-      "value": "[listkeys(variables('authRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
-    },
-    "SharedAccessPolicyPrimaryKey": {
-      "type": "string",
-      "value": "[listkeys(variables('authRuleResourceId'), variables('sbVersion')).primaryKey]"
+      "value": "[variables('serviceBusNamespace')]"
     }
   }
 }
