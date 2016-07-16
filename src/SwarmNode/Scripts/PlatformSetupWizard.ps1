@@ -16,6 +16,8 @@ $deploymentTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzur
 $serviceBusTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/azureServiceBusDeploy.json"
 [string[]]$repoUrls =  $defaultRepository
 
+$resourceGroup
+
 Write-Host $repoUrls
 
 function getParameterValue([string] $parameterName){
@@ -48,6 +50,12 @@ function getAvailableCpex(){
     [string[]]$frameworkVer =".NETFramework, Version=4.0"
     $cpexList = $repoFactory.Search("ciresoncpex", $frameworkVer, $true)
     return $cpexList
+}
+
+function getLocations(){
+    #todo: identify location services, and only show locations that are compatible
+    $locations = Get-AzureLocation | select -ExpandProperty Name 
+    return $locations
 }
 
 function getPlatformVersions($preRelease){
@@ -244,11 +252,35 @@ function chooseServiceBus(){
         setParameterValue "ServiceBusConnectionString" $existingSBs[$selectedSb].ConnectionString
         setParameterValue "CreateNewServiceBus" $false
     }else{
-        $newSbName = promptForText "Please enter the desired name for the new ServiceBus"
-        setParameterValue "ServiceBusNamespace" $newSbName
-        setParameterValue "CreateNewServiceBus" $true
-    }
+        $namespaceValid=$false
+        do{
+            
+            $newSbName = promptForText "Please enter the desired name for the new ServiceBus"
+        
+            $existingNamespace = Get-AzureSBNamespace -Name $newSbName
+            if($existingNamespace){
+                $choice = promptForChoice "The requested service bus already exists, would you like to connect to this bus, or chose a different name?" "connect to $newSbName" "choose a new name"
+                if($choice -eq 0){
+                    setParameterValue "ServiceBusConnectionString" $existingNamespace.ConnectionString
+                    setParameterValue "CreateNewServiceBus" $false
+                    $namespaceValid = $true
+                }                
+            }else{
+                setParameterValue "ServiceBusNamespace" $newSbName
+                setParameterValue "CreateNewServiceBus" $true
+                $namespaceValid=$true                
+            }
 
+        }until($namespaceValid=$true)
+
+    }
+}
+
+function chooseLocation(){
+    $locations = getLocations
+    $location = promptForChoice "Where would you like to install?" $locations
+
+    setParameterValue "Location" $locations[$location]
 }
 
 function writeCurrentState(){
@@ -283,16 +315,19 @@ function getTemplateParams(){
 function createResourceGroup(){
 	if($namedParameters["CreateResourceGroup"] -eq $true){
         Write-Host "Creating Resource Group $($namedParameters["ResourceGroupName"])"
-        New-AzureRmResourceGroup -Name $namedParameters["ResourceGroupName"] -Location "East US 2"
+        $resourceGroup = New-AzureRmResourceGroup -Name $namedParameters["ResourceGroupName"] -Location $namedParameters["Location"]
         Write-Host "Done Creating Resource Group"
+    }else{
+        $resourceGroup = Get-AzureRmResourceGroup -Name $namedParameters["ResourceGroupName"]
     }
+
+
 }
 
 function deployServiceBus(){
     if($namedParameters["CreateNewServiceBus"] -eq $true){
-		$templateParams = @{"serviceBusNamespace"=$namedParameters["ServiceBusNamespace"]}
-        Write-Host "Creating service bus $($namedParameters["ServiceBusNamespace"])"
-		$results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters["DeploymentName"])ServiceBus" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams 
+		Write-Host "Creating service bus $($namedParameters["ServiceBusNamespace"])"
+		$results = New-AzureSBNamespace -Name $($namedParameters["ServiceBusNamespace"]) -NamespaceType Messaging -Location $namedParameters["Location"]
     }
 }
 
@@ -330,6 +365,8 @@ function loginToAzureIfNeeded () {
 #
 loginToAzureIfNeeded
 #
+chooseLocation
+
 #chooseSubscription
 #
 chooseResourceGroup
