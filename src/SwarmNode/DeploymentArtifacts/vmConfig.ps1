@@ -11,7 +11,7 @@ param
     [string]$sqlPassword = $(throw "sqlPassword is required."),
     [string]$platformVersion = $(throw "platformVersion is required."),
 	[string]$platformRole = "Web",
-	[string]$serviceBusConnectionString = ""
+	[string]$serviceBusConnectionString = "",
 	[string]$additionalCpex = ""
 )
 $installRoot = "C:\Cireson.Platform.Host"

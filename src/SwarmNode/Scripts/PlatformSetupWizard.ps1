@@ -16,8 +16,6 @@ $deploymentTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzur
 $serviceBusTemplateUrl = "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/Templates/azureServiceBusDeploy.json"
 [string[]]$repoUrls =  $defaultRepository
 
-$resourceGroup
-
 Write-Host $repoUrls
 
 function getParameterValue([string] $parameterName){
@@ -152,18 +150,24 @@ function chooseResourceGroup(){
     writeCurrentState
     $resourceGroups = Get-AzureRmResourceGroup | select -ExpandProperty ResourceGroupName
     $resourceGroupName = ""
-    $rmType = promptForChoice "Would you like to install to an existing Resource Group, or create a new resource group?" @("New","Existing")
+    $rmType = promptForChoice "Would you like to install to an existing Resource Group, or create a new resource group?" @("New ($(getParameterValue 'DeploymentName'))","Existing")
     if($rmType -ne "0"){
         $choice = promptForChoice "Select and existing Resource Group." $resourceGroups
         $resourceGroupName = $resourceGroups[$choice]
     }else{
-        do{
-            $resourceGroupName = Read-Host -Prompt "Enter the new resource group name (include only letters and numbers)"
-        } until ($resourceGroupName -ne "")
+        $resourceGroupName = getParameterValue 'DeploymentName'
+
         setParameterValue "CreateResourceGroup" $true
     }
 
     setParameterValue "ResourceGroupName" $resourceGroupName
+}
+
+function chooseDeploymentSize(){
+    writeCurrentState
+    $deploySizeOptions = "Small (1-100 users)", "Medium (100-1,000 users)", "Large (1,000-10,000 users)", "X-Large (10,000 +)"
+    $deploymentSize = promptForChoice "What size enterprise would you like to deploy?" $deploySizeOptions
+    setParameterValue "deploymentSize" $deploySizeOptions[$deploymentSize]
 }
 
 function showEULA(){
@@ -243,9 +247,9 @@ function choosePlatformVersion(){
 
 function chooseServiceBus(){
     writeCurrentState
-    $useExisting = promptForChoice "Would you like to connect to an existing Service Bus, or Create a New one?" "Existing", "New"
+    $useExisting = promptForChoice "Would you like to connect to an existing Service Bus, or Create a New one?" "New", "Existing"
 
-    if($useExisting -eq 0){
+    if($useExisting -eq 1){
         $existingSBs = Get-AzureSBNamespace | where {$_.Status -eq "Active"}
         $options = $existingSBs | select -ExpandProperty Name 
         $selectedSb =promptForChoice "Select the Service Bus that you wish to connect this instance to." $options
@@ -255,16 +259,10 @@ function chooseServiceBus(){
         $namespaceValid=$false
         do{
             
-            $newSbName = promptForText "Please enter the desired name for the new ServiceBus"
+            $newSbName = "$(getParameterValue "DeploymentName")sb".ToLower()
         
             $existingNamespace = Get-AzureSBNamespace -Name $newSbName
             if($existingNamespace){
-                $choice = promptForChoice "The requested service bus already exists, would you like to connect to this bus, or chose a different name?" "connect to $newSbName" "choose a new name"
-                if($choice -eq 0){
-                    setParameterValue "ServiceBusConnectionString" $existingNamespace.ConnectionString
-                    setParameterValue "CreateNewServiceBus" $false
-                    $namespaceValid = $true
-                }                
             }else{
                 setParameterValue "ServiceBusNamespace" $newSbName
                 setParameterValue "CreateNewServiceBus" $true
@@ -306,7 +304,6 @@ function getTemplateParams(){
         "platformVersion"="$(getParameterValue 'PlatformVersion')";
         "additionalCpex"="$(getParameterValue 'additionalCpex')";
         "serviceBusConnectionString"="$(getParameterValue 'serviceBusConnectionString')";
-        "serviceBusNamespace"="$(getParameterValue 'serviceBusNamespace')";
         }
 
     return $params
@@ -330,7 +327,8 @@ function deployServiceBus(){
 		#$results = New-AzureSBNamespace -Name $($namedParameters["ServiceBusNamespace"]) -NamespaceType Messaging -Location $namedParameters["Location"] -CreateACSNamespace $false 
         $templateParams = @{"serviceBusNamespace" = "$($namedParameters['ServiceBusNamespace'])"}
         $results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters['DeploymentName'])SB" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams
-
+        $namespace = Get-AzureSBNamespace -Name $results.Outputs.namespace.Value
+        setParameterValue "serviceBusNamespace" $namespace.ConnectionString
     }
 }
 
@@ -339,8 +337,6 @@ function deployAzure(){
 
     $templateParams = getTemplateParams
     
-    deployServiceBus
-
     Write-Host $templateParams
 
     Write-Host "Deploying, this may take some time.  You can check the progress of the deployment at https://portal.azure.com"
@@ -364,30 +360,34 @@ function loginToAzureIfNeeded () {
 }
 
 
-#showEula
+showEula
 #
 loginToAzureIfNeeded
 #
+chooseDeploymentSize
+#
+chooseName
+#
 chooseLocation
-
-#chooseSubscription
+#
+chooseSubscription
 #
 chooseResourceGroup
 #
-#chooseCpex
+chooseCpex
 #
-#chooseName
+chooseUserName
 #
-#chooseUserName
+$adminPassword = choosePassword
 #
-#$adminPassword = choosePassword
-#
-#choosePlatformVersion
+choosePlatformVersion
 
 chooseServiceBus
+
+read-host "We have everything we need, press enter to begin deployment."
 
 createResourceGroup
 
 deployServiceBus
 
-#deployAzure
+deployAzure
