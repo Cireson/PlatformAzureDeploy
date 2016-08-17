@@ -51,6 +51,9 @@ $cpexJson = $additionalCpex
 
 Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 
+Set-Content "$installRoot\cpex\webUI.json" -Value "[{""Name"":""Cireson.Platform.Extension.WebUi"",	""Version"":""0.1.0-rc0162""}]"
+
+
 #install platform service locally, and start it running
 start-process "C:\Cireson.Platform.Host\Cireson.Platform.Host.exe" -ArgumentList $args | Out-File "$installRoot\Cireson.Platform.Host.InstallLog.txt"
 

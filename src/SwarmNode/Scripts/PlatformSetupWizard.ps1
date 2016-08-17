@@ -253,7 +253,7 @@ function chooseServiceBus(){
         $existingSBs = Get-AzureSBNamespace | where {$_.Status -eq "Active"}
         $options = $existingSBs | select -ExpandProperty Name 
         $selectedSb =promptForChoice "Select the Service Bus that you wish to connect this instance to." $options
-        setParameterValue "ServiceBusConnectionString" $existingSBs[$selectedSb].ConnectionString
+        setParameterValue "serviceBusConnectionString" $existingSBs[$selectedSb].ConnectionString
         setParameterValue "CreateNewServiceBus" $false
     }else{
         $namespaceValid=$false
@@ -302,7 +302,7 @@ function getTemplateParams(){
         "vmSize"="Standard_D1";
         "dbName"="CiresonPlatform";
         "platformVersion"="$(getParameterValue 'PlatformVersion')";
-        "additionalCpex"="$(getParameterValue 'additionalCpex')";
+        "additionalCpex"="$(getParameterValue 'InstallCpex')";
         "serviceBusConnectionString"="$(getParameterValue 'serviceBusConnectionString')";
         }
 
@@ -328,7 +328,7 @@ function deployServiceBus(){
         $templateParams = @{"serviceBusNamespace" = "$($namedParameters['ServiceBusNamespace'])"}
         $results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters['DeploymentName'])SB" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams
         $namespace = Get-AzureSBNamespace -Name $results.Outputs.namespace.Value
-        setParameterValue "serviceBusNamespace" $namespace.ConnectionString
+        setParameterValue "serviceBusConnectionString" $namespace.ConnectionString
     }
 }
 
@@ -389,5 +389,7 @@ read-host "We have everything we need, press enter to begin deployment."
 createResourceGroup
 
 deployServiceBus
+
+Write-Host (getTemplateParams | ConvertTo-Json)
 
 deployAzure
