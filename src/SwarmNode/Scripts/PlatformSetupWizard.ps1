@@ -89,7 +89,7 @@ function promptForMultiChoice($caption, $options, $required){
     
         Write-Host "<Enter> - Done"
     
-        $response = Read-Host
+        [int]$response = Read-Host
         if($response -ne $i){
             if($selections.Contains($response)){
                 $selections.Remove($response) | Out-Null
@@ -113,7 +113,7 @@ function promptForChoice($caption, $options){
         $i++
     }   
         
-    $response = Read-Host
+    [int]$response = Read-Host
     if(!($response -gt 0 -and $response -lt $options.Length)){
         $response = "0"
     }
