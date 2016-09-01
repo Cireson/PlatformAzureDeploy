@@ -37,8 +37,8 @@
         "description": "Password for the Virtual Machine."
       }
     },
-    "serviceBusConnectionString": {
-      "type": "securestring",
+    "sbConnectionString": {
+      "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Connection string for connecting to the shared service bus."
@@ -121,7 +121,7 @@
     },
     "additionalCpex": {
       "type": "string",
-      "defaultValue": "[[]"
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -320,7 +320,7 @@
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/PlatformDownload.ps1",
                 "https://raw.githubusercontent.com/Cireson/PlatformAzureDeploy/master/src/SwarmNode/DeploymentArtifacts/AddAccountToLogonAsService.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), ' -serviceBusConnectionString', parameters('serviceBusConnectionString'), '-additionalCpexJson', parameters('additionalCpex'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file vmConfig.ps1 ', ' -HostName ', variables('hostDNSNameScriptArgument'), ' -sqlServer ', variables('sqlsvrName'), ' -dbName ', variables('dbName'), ' -sqlUserName ', parameters('adminUsername'), ' -sqlPassword ', parameters('adminPassword'), ' -platformVersion ', parameters('platformVersion'), ' -platformRole', parameters('platformRole'), ' -sbConnectionString', parameters('sbConnectionString'), '-additionalCpex', parameters('additionalCpex'))]"
             }
           }
         }

@@ -11,7 +11,7 @@ param
     [string]$sqlPassword = $(throw "sqlPassword is required."),
     [string]$platformVersion = $(throw "platformVersion is required."),
 	[string]$platformRole = "Web",
-	[string]$serviceBusConnectionString = "",
+	[string]$sbConnectionString = "",
 	[string]$additionalCpex = ""
 )
 $installRoot = "C:\Cireson.Platform.Host"
@@ -37,10 +37,10 @@ if($platformRole -eq "Both"){
 
 #set the connection string for the servicebus
 [xml]$config = Get-Content  "$installRoot\Cireson.Platform.Host.exe.config"
-$sbConnectionString = $config.CreateElement("add")
-$sbConnectionString.SetAttribute("key","ServiceBusConnectionString")
-$sbConnectionString.SetAttribute("value",$serviceBusConnectionString)
-$config.configuration.appSettings.AppendChild($sbConnectionString)
+$sbConnectionStringXml = $config.CreateElement("add")
+$sbConnectionStringXml.SetAttribute("key","ServiceBusConnectionString")
+$sbConnectionStringXml.SetAttribute("value",$sbConnectionString)
+$config.configuration.appSettings.AppendChild($sbConnectionStringXml)
 $config.Save("C:\Cireson.Platform.Host\Cireson.Platform.Host.exe.config")
 
 new-item "$installRoot\cpex" -ItemType Directory
