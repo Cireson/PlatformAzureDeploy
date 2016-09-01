@@ -49,9 +49,9 @@ new-item "$installRoot\cpex" -ItemType Directory
 #***Add additional cpex nuget references as needed.
 $cpexJson = $additionalCpex
 
-Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
+#Set-Content "$installRoot\cpex\armInstall.json" -Value $cpexJson
 
-Set-Content "$installRoot\cpex\webUI.json" -Value "[{""Name"":""Cireson.Platform.Extension.WebUi"",	""Version"":""0.1.0-rc0162""}]"
+#Set-Content "$installRoot\cpex\webUI.json" -Value "[{""Name"":""Cireson.Platform.Extension.WebUi"",	""Version"":""0.1.0-rc0178""}]"
 
 
 #install platform service locally, and start it running
