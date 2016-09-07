@@ -79,7 +79,7 @@ function promptForMultiChoice($caption, $options, $required){
         $i=0
     
         foreach($option in $options){
-            if($selections.Contains($i.ToString())){
+            if($selections.Contains($i.ToString()) -or $selections.Contains($i)){
                 Write-Host "[$i*] - $option -Selected" 
             }else{
                 Write-Host "[$i] - $option"
@@ -89,12 +89,13 @@ function promptForMultiChoice($caption, $options, $required){
     
         Write-Host "<Enter> - Done"
     
-        [int]$response = Read-Host
-        if($response -ne $i){
-            if($selections.Contains($response)){
-                $selections.Remove($response) | Out-Null
+        $response = Read-Host
+        if($response -ne ""){
+            [int]$responseInt = $response
+            if($selections.Contains($responseInt)){
+                $selections.Remove($responseInt) | Out-Null
             }else{
-                $selections.Add($response) | Out-Null
+                $selections.Add($responseInt) | Out-Null
             }
         }
     
@@ -202,7 +203,7 @@ function chooseCpex(){
         $cpexOptions.Add("$($cpex.Title) - $($cpex.Version)")
     }
 
-    $choices = promptForMultiChoice "Select any CPEX you would like to install." $cpexOptions
+    $choices = promptForMultiChoice "Select any CPEX you would like to install." $cpexOptions $false
 
     $cpexdefs = @()
 
@@ -253,7 +254,7 @@ function chooseServiceBus(){
         $existingSBs = Get-AzureSBNamespace | where {$_.Status -eq "Active"}
         $options = $existingSBs | select -ExpandProperty Name 
         $selectedSb =promptForChoice "Select the Service Bus that you wish to connect this instance to." $options
-        setParameterValue "serviceBusConnectionString" $existingSBs[$selectedSb].ConnectionString
+        setParameterValue "sbConnectionString" $existingSBs[$selectedSb].ConnectionString
         setParameterValue "CreateNewServiceBus" $false
     }else{
         $namespaceValid=$false
@@ -303,7 +304,7 @@ function getTemplateParams(){
         "dbName"="CiresonPlatform";
         "platformVersion"="$(getParameterValue 'PlatformVersion')";
         "additionalCpex"="$(getParameterValue 'InstallCpex')";
-        "serviceBusConnectionString"="$(getParameterValue 'serviceBusConnectionString')";
+        "sbConnectionString"="$(getParameterValue 'sbConnectionString')";
         }
 
     return $params
@@ -328,7 +329,9 @@ function deployServiceBus(){
         $templateParams = @{"serviceBusNamespace" = "$($namedParameters['ServiceBusNamespace'])"}
         $results = New-AzureRmResourceGroupDeployment -Name "$($namedParameters['DeploymentName'])SB" -ResourceGroupName $namedParameters["ResourceGroupName"] -TemplateUri $serviceBusTemplateUrl -TemplateParameterObject $templateParams
         $namespace = Get-AzureSBNamespace -Name $results.Outputs.namespace.Value
-        setParameterValue "serviceBusConnectionString" $namespace.ConnectionString
+        setParameterValue "sbConnectionString" $namespace.ConnectionString
+
+        Write-Host "SB Namespace: $namespace"
     }
 }
 
